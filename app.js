@@ -1,10 +1,13 @@
-const express=require('express');
+const express = require('express');
+const helmet = require('helmet')
 require('dotenv').config();
-const {DBConecction} =require('./database/config')
+const { DBConecction } = require('./database/config')
 
 /* configurar express */
-const app=express();
-const port=process.env.PORT;
+const app = express();
+const port = process.env.PORT;
+
+app.use(helmet())
 
 /* conectar a bbdd */
 DBConecction()
@@ -16,26 +19,26 @@ app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
 
 /* configurar static */
-app.use(express.static(__dirname+'/public'));
+app.use(express.static(__dirname + '/public'));
 
 /* configurar template engines */
-app.set('views',__dirname+'/views');
-app.set('view engine','ejs');
+app.set('views', __dirname + '/views');
+app.set('view engine', 'ejs');
 
 /* rutas */
-app.use('/',require('./routers/frontRouter'))
-app.use('/admin/servicios',require('./routers/serviciosRouter'))
+app.use('/', require('./routers/frontRouter'))
+app.use('/admin/servicios', require('./routers/serviciosRouter'))
 
 
 
-app.use((req,res)=>{
-    res.status(404).render('front/404',{
-        error:'404',
-        msg:'Página no encontrada'
+app.use((req, res) => {
+    res.status(404).render('front/404', {
+        error: '404',
+        msg: 'Página no encontrada'
     })
 })
 
 /* poner express a la escucha */
-app.listen(port,()=>{
+app.listen(port, () => {
     console.log(`Express a la escucha del puerto ${port}`)
 })
